@@ -21,6 +21,9 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role',
+        'age',
+        'gender',
     ];
 
     /**
@@ -45,4 +48,26 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+    public function movies()
+    { 
+        return $this->hasMany( \App\Models\Movie::class); 
+    }
+    public function comments()
+    { 
+        return $this->hasMany( \App\Models\Comment::class); 
+    }
+    public function ratings()
+    { 
+        return $this->hasMany( \App\Models\Rating::class); 
+    }
+
+    public function likedComments() {
+        return $this->belongsToMany(Comment::class, 'comment_likes')->withPivot('is_like');
+    }
+    
+    public function favorites()
+    {
+        return $this->belongsToMany(Movie::class, 'favorites')->withTimestamps();
+    }
+
 }

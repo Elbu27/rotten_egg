@@ -18,8 +18,26 @@ class DatabaseSeeder extends Seeder
         // User::factory(10)->create();
 
         User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+            'name' => 'Admin User',
+            'email' => 'admin@example.com',
+            'role' => 'admin',
         ]);
+
+        // Producers & normal users
+        \App\Models\User::factory(2)->create(['role' => 'producer']);
+        \App\Models\User::factory(5)->create(['role' => 'user']);
+
+        // Movies (auto-linked to producers)
+        \App\Models\Movie::factory(10)->create();
+
+        // Comments & Ratings
+        \App\Models\Comment::factory(30)->create();
+        \App\Models\Rating::factory(50)->create();
+
+        \App\Models\CommentLike::factory(50)->create();
+
+        \App\Models\Favorite::factory(30)->create();
+
+
     }
 }
