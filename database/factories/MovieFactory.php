@@ -22,7 +22,7 @@ class MovieFactory extends Factory
             'description' => fake()->paragraph(),
             'poster' => fake()->imageUrl(400, 600, 'movies'),
             'trailer_url' => fake()->url(),
-            'is_restricted' => fake()->boolean(30), // about 30% restricted
+            'is_restricted' => fake()->boolean(25),
             'user_id' => \App\Models\User::factory()->state(['role' => 'producer']),
             'type' => fake()->randomElement($types),
         ];

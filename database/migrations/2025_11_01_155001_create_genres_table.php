@@ -12,9 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('genres', function (Blueprint $table) {
-            $table->id();                     // Primary key
-            $table->string('name')->unique(); // Unique genre name (Action, Comedy, etc.)
-            $table->timestamps();             // Created_at, updated_at
+            $table->id();                    
+            $table->string('name')->unique(); 
+            $table->timestamps();            
         });
     }
 

@@ -5,6 +5,9 @@ namespace Database\Seeders;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use App\Models\Movie;
+use App\Models\Comment;
+use App\Models\Rating;
 
 class DatabaseSeeder extends Seeder
 {
@@ -24,20 +27,26 @@ class DatabaseSeeder extends Seeder
         ]);
 
         // Producers & normal users
-        \App\Models\User::factory(2)->create(['role' => 'producer']);
-        \App\Models\User::factory(5)->create(['role' => 'user']);
+        $producers = User::factory(2)->create(['role' => 'producer']);
+        $users = User::factory(5)->create(['role' => 'user']);
 
-        // Movies (auto-linked to producers)
-        \App\Models\Movie::factory(10)->create();
+        // Movies 
+        $movies = Movie::factory(10)->create();
 
         // Comments & Ratings
-        \App\Models\Comment::factory(30)->create();
-        \App\Models\Rating::factory(50)->create();
+        Comment::factory(30)->create();
+        Rating::factory(50)->create();
 
+        // Comment Likes
         \App\Models\CommentLike::factory(50)->create();
 
-        \App\Models\Favorite::factory(30)->create();
+        //Add movie into favourite
+        $allMovies = Movie::pluck('id');
 
+        foreach ($users as $user) {
+            $randomMovies = $allMovies->random(rand(2, 5));
+            $user->favorites()->syncWithoutDetaching($randomMovies);
+        }
 
     }
 }

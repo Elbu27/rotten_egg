@@ -17,8 +17,11 @@ return new class extends Migration
         $table->text('description')->nullable();
         $table->string('poster')->nullable();
         $table->string('trailer_url')->nullable();
-        $table->boolean('is_restricted')->default(false); // 🔹 new: mark 18+ movies
+        $table->boolean('is_restricted')->default(false);
         $table->foreignId('user_id')->constrained()->onDelete('cascade');
+        $table->string('type')->default('General');
+        $table->integer('release_year')->nullable();
+        $table->integer('age_rating')->nullable();
         $table->timestamps();
     });
 }

@@ -15,12 +15,13 @@ class Movie extends Model
         'description',
         'poster',
         'trailer_url',
-        'is_restricted', // optional 18+ flag
+        'is_restricted', 
         'user_id',
+        'type',
     ];
 
     /**
-     * A movie belongs to one producer (user).
+     * A movie belongs to one producer.
      */
     public function user()
     {
@@ -43,16 +44,20 @@ class Movie extends Model
         return $this->hasMany(Rating::class);
     }
 
+    /**
+     * A movie can have many genres
+     */
     public function genres()
     {
         return $this->belongsToMany(Genre::class);
     }
 
+    /**
+     * A movie can be saved as watchlist by many users
+     */
     public function favoritedBy()
     {
         return $this->belongsToMany(User::class, 'favorites')->withTimestamps();
     }
-
-
 
 }

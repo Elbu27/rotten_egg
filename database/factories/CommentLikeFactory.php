@@ -11,7 +11,7 @@ class CommentLikeFactory extends Factory
         return [
             'user_id' => \App\Models\User::factory(),
             'comment_id' => \App\Models\Comment::factory(),
-            'is_like' => fake()->boolean(80), // 80% chance of like
+            'is_like' => fake()->boolean(80),
         ];
     }
 }
