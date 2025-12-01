@@ -36,10 +36,35 @@
 
 <h3>Add a Comment</h3>
 
-<form method="POST" action="{{ route('comments.store', $movie) }}">
+<form id="comment-form" method="POST" action="{{ route('comments.store', $movie) }}">
     @csrf
-    <textarea name="content" rows="3" class="form-control"></textarea>
+    <textarea id="comment-content" name="content" rows="3" class="form-control"></textarea>
     <button class="btn btn-primary mt-2">Post Comment</button>
 </form>
+
+<script>
+    document.getElementById('comment-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        let content = document.getElementById('comment-content').value;
+        let url = this.action;
+        fetch(url, {
+        method: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ content })
+    })
+    .then(response => response.json())
+    .then(data => {
+        document.getElementById('comment-list').insertAdjacentHTML('beforeend', data.html);
+        document.getElementById('comment-content').value = '';
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+});
+</script>
 
 @endsection

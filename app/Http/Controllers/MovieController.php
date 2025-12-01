@@ -21,6 +21,7 @@ class MovieController extends Controller
      */
     public function create()
     {
+        $this->authorize('create', Movie::class);
         $genres = \App\Models\Genre::all();
 
         return view('movies.create', compact('genres'));
@@ -31,6 +32,7 @@ class MovieController extends Controller
      */
     public function store(Request $request)
     {
+        $this->authorize('create', Movie::class);
         $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required',
@@ -69,6 +71,7 @@ class MovieController extends Controller
      */
     public function edit(\App\Models\Movie $movie)
     {
+        $this->authorize('update', Movie::class);
         $genres = \App\Models\Genre::all();
 
         return view('movies.edit', compact('movie','genres'));
@@ -79,6 +82,7 @@ class MovieController extends Controller
      */
     public function update(Request $request, \App\Models\Movie $movie)
     {
+        $this->authorize('update', Movie::class);
         $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required',
@@ -105,6 +109,7 @@ class MovieController extends Controller
      */
     public function destroy(\App\Models\Movie $movie)
     {
+        $this->authorize('delete', Movie::class);
         $movie->delete();
         return redirect()->route('movies.index')->with('success','Deleted successfully!');
     }
