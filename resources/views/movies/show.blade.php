@@ -28,7 +28,17 @@
 
 <div id="comment-list">
     @foreach($movie->comments as $comment)
-        @include('comments.single', ['comment' => $comment])
+        <div class="border-b py-3">
+                <p>{{ $comment->content }}</p>
+
+                <p class="text-sm text-gray-500 mt-1">
+                    Posted by
+                    <a href="{{ route('users.show', $comment->user) }}" class="text-blue-600 underline">
+                        {{ $comment->user->name }}
+                    </a>
+                    on {{ $comment->created_at->diffForHumans() }}
+                </p>
+        </div>
     @endforeach
 </div>
 

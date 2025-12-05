@@ -20,6 +20,12 @@ class CommentController extends Controller
             'user_id' => auth()->id(),
         ]);
 
+        if ($movie->user_id !== auth()->id()) {
+            $movie->user->notify(
+                new \App\Notifications\NewCommentOnMovie($comment)
+            );
+        }
+
         if ($request->ajax()) {
             return response()->json([
                 'html' => view('comments.single', compact('comment'))->render()

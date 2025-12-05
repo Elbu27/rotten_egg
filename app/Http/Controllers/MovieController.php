@@ -9,11 +9,29 @@ class MovieController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $movies = \App\Models\Movie::with('user')->paginate(8);
+        $query = \App\Models\Movie::with('user', 'genres');
 
-        return view('movies.index', compact('movies'));
+        //Search by title
+        if ($search = $request->input('q')) {
+            $query->where('title', 'like', '%' . $search . '%');
+        }
+
+        //Filter by genre ID
+        if ($genreId = $request->input('genre')) {
+            $query->whereHas('genres', function ($q) use ($genreId) {
+                $q->where('genres.id', $genreId);
+            });
+        }
+
+        //Paginate (keeps q & genre in links)
+        $movies = $query->paginate(8)->withQueryString();
+
+        //Needed for the <select> in Blade
+        $genres = \App\Models\Genre::orderBy('name')->get();
+
+        return view('movies.index', compact('movies', 'genres'));
     }
 
     /**
@@ -32,7 +50,7 @@ class MovieController extends Controller
      */
     public function store(Request $request)
     {
-        $this->authorize('create', Movie::class);
+       // $this->authorize('create', MovieController::class);
         $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required',
@@ -71,7 +89,7 @@ class MovieController extends Controller
      */
     public function edit(\App\Models\Movie $movie)
     {
-        $this->authorize('update', Movie::class);
+        $this->authorize('update', MovieController::class);
         $genres = \App\Models\Genre::all();
 
         return view('movies.edit', compact('movie','genres'));
@@ -82,7 +100,7 @@ class MovieController extends Controller
      */
     public function update(Request $request, \App\Models\Movie $movie)
     {
-        $this->authorize('update', Movie::class);
+        $this->authorize('update', \App\Models\Movie::class);
         $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required',

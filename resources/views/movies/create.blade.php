@@ -18,8 +18,15 @@
     <label>Age Rating</label>
     <input type="number" name="age_rating" class="form-control mb-2">
 
-    <label>Poster</label>
-    <input type="file" name="poster" class="form-control mb-2">
+    <div class="mb-4">
+        <label class="block font-medium mb-1">Poster Image</label>
+        <input type="file" name="poster" 
+            class="block w-full border border-gray-300 rounded-md px-3 py-2">
+
+        @error('poster')
+            <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
+        @enderror
+    </div>
 
     <label>Genres</label>
     <select name="genres[]" multiple class="form-control mb-3">
