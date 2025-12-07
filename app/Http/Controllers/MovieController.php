@@ -26,7 +26,7 @@ class MovieController extends Controller
         }
 
         //Paginate (keeps q & genre in links)
-        $movies = $query->paginate(8)->withQueryString();
+        $movies = $query->paginate(6)->withQueryString();
 
         //Needed for the <select> in Blade
         $genres = \App\Models\Genre::orderBy('name')->get();
@@ -39,7 +39,9 @@ class MovieController extends Controller
      */
     public function create()
     {
-        $this->authorize('create', Movie::class);
+        if (!auth()->user()->isProducer()) {
+            abort(403, 'Only producers can create movies.');
+        }
         $genres = \App\Models\Genre::all();
 
         return view('movies.create', compact('genres'));

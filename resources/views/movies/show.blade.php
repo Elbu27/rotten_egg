@@ -27,54 +27,68 @@
 <h3>Comments</h3>
 
 <div id="comment-list">
-    @foreach($movie->comments as $comment)
-        <div class="border-b py-3">
-                <p>{{ $comment->content }}</p>
-
-                <p class="text-sm text-gray-500 mt-1">
-                    Posted by
-                    <a href="{{ route('users.show', $comment->user) }}" class="text-blue-600 underline">
-                        {{ $comment->user->name }}
-                    </a>
-                    on {{ $comment->created_at->diffForHumans() }}
-                </p>
-        </div>
+    @foreach ($movie->comments as $comment)
+        @include('comments.single', ['comment' => $comment])
     @endforeach
 </div>
+
+@auth
+    <h4 class="mt-4">Add a Comment</h4>
+    <textarea id="comment-content" class="form-control" rows="3"></textarea>
+    <button id="submit-comment" class="btn btn-primary mt-2">Post Comment</button>
+@else
+    <p class="text-muted mt-3">
+        You must <a href="{{ route('login') }}">log in</a> to comment.
+    </p>
+@endauth
 
 <hr>
 
 <h3>Add a Comment</h3>
 
-<form id="comment-form" method="POST" action="{{ route('comments.store', $movie) }}">
+<form id="comment-form" method="POST" action="{{ route('movies.comments.store', $movie) }}">
     @csrf
     <textarea id="comment-content" name="content" rows="3" class="form-control"></textarea>
     <button class="btn btn-primary mt-2">Post Comment</button>
 </form>
 
 <script>
-    document.getElementById('comment-form').addEventListener('submit', function(e) {
-        e.preventDefault();
-        let content = document.getElementById('comment-content').value;
-        let url = this.action;
-        fetch(url, {
-        method: 'POST',
-        headers: {
-            'X-CSRF-TOKEN': '{{ csrf_token() }}',
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ content })
-    })
-    .then(response => response.json())
-    .then(data => {
-        document.getElementById('comment-list').insertAdjacentHTML('beforeend', data.html);
-        document.getElementById('comment-content').value = '';
-    })
-    .catch(error => {
-        console.error('Error:', error);
+    document.getElementById('submit-comment')?.addEventListener('click', function () {
+        let content = document.getElementById('comment-content').value.trim();
+
+        if (content.length === 0) {
+            alert("Comment cannot be empty.");
+            return;
+        }
+
+        fetch("{{ route('movies.comments.store', $movie) }}", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            },
+            body: JSON.stringify({ content })
+        })
+        .then(response => {
+            //when not logged in:
+            if (response.status === 401 || response.status === 403 || response.redirected) {
+                alert("You must be logged in to post a comment.");
+                return null;
+            }
+            return response.json();
+        })
+        .then(data => {
+
+            if (!data) return;
+
+            document.getElementById('comment-list')
+                .insertAdjacentHTML('beforeend', data.html);
+
+            document.getElementById('comment-content').value = '';
+        })
+        .catch(error => console.error("AJAX Error:", error));
     });
-});
 </script>
+
 
 @endsection

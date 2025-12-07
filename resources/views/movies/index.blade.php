@@ -116,6 +116,14 @@
         </div>
     @endforeach
 
+    @auth
+        @if(auth()->user()->isProducer())
+            <a href="{{ route('movies.create') }}" class="btn btn-primary">
+                Create Movie
+            </a>
+        @endif
+    @endauth
+
     <!-- Paginate -->
     <div class="mt-3">
         {{ $movies->links() }}
