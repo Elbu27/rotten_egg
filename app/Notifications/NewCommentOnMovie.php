@@ -18,7 +18,7 @@ class NewCommentOnMovie extends Notification
      */
     public function __construct(Comment $comment)
     {
-        $this->commment = $comment;
+        $this->comment = $comment;
     }
 
     /**

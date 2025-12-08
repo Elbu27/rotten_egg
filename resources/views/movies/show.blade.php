@@ -42,15 +42,6 @@
     </p>
 @endauth
 
-<hr>
-
-<h3>Add a Comment</h3>
-
-<form id="comment-form" method="POST" action="{{ route('movies.comments.store', $movie) }}">
-    @csrf
-    <textarea id="comment-content" name="content" rows="3" class="form-control"></textarea>
-    <button class="btn btn-primary mt-2">Post Comment</button>
-</form>
 
 <script>
     document.getElementById('submit-comment')?.addEventListener('click', function () {
