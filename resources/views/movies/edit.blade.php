@@ -5,12 +5,13 @@
 
 <div class="card shadow-sm">
         <div class="card-body">
-            <form method="POST" action="{{ route('movies.update') }}" enctype="multipart/form-data">
+            <form method="POST" action="{{ route('movies.update', $movie) }}" enctype="multipart/form-data">
                 @csrf
+                @method('PUT')
 
                 <div class="mb-3">
                     <label class="form-label">Title</label>
-                    <input type="text" name="title" value="{{ old('title') }}"
+                    <input type="text" name="title" value="{{ old('title', $movie) }}"
                            class="form-control @error('title') is-invalid @enderror">
                     @error('title')<div class="invalid-feedback">{{ $message }}</div>@enderror
                 </div>
@@ -18,19 +19,19 @@
                 <div class="mb-3">
                     <label class="form-label">Description</label>
                     <textarea name="description" rows="4"
-                              class="form-control @error('description') is-invalid @enderror">{{ old('description') }}</textarea>
+                              class="form-control @error('description') is-invalid @enderror">{{ old('description', $movie) }}</textarea>
                     @error('description')<div class="invalid-feedback">{{ $message }}</div>@enderror
                 </div>
 
                 <div class="row">
                     <div class="col-md-6 mb-3">
                         <label class="form-label">Release Year</label>
-                        <input type="number" name="release_year" value="{{ old('release_year') }}"
+                        <input type="number" name="release_year" value="{{ old('release_year', $movie) }}"
                                class="form-control">
                     </div>
                     <div class="col-md-6 mb-3">
                         <label class="form-label">Age Rating</label>
-                        <input type="number" name="age_rating" value="{{ old('age_rating') }}"
+                        <input type="number" name="age_rating" value="{{ old('age_rating', $movie) }}"
                                class="form-control">
                     </div>
                 </div>
