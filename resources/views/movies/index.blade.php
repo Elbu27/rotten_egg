@@ -1,132 +1,127 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container mt-4">
-    <h1 class="mb-4">Movies</h1>
+<div class="container py-4">
 
-    <!--SEARCH + FILTER FORM-->
+    <h1 class="mb-4 fw-bold">Movies</h1>
+
+    <!-- SEARCH + FILTER -->
     <form method="GET" action="{{ route('movies.index') }}" class="mb-4">
         <div class="row g-3">
 
-            <!-- Search box -->
-            <div class="col-md-5">
+            <!-- Search -->
+            <div class="col-md-4">
                 <input 
                     type="text" 
-                    name="q"
+                    name="q" 
                     value="{{ request('q') }}"
+                    placeholder="Search movies…" 
                     class="form-control"
-                    placeholder="Search movies..."
                 >
             </div>
 
-            <!-- Genre dropdown -->
-            <div class="col-md-4">
+            <!-- Genre -->
+            <div class="col-md-3">
                 <select name="genre" class="form-select">
                     <option value="">All Genres</option>
+
                     @foreach($genres as $genre)
-                        <option value="{{ $genre->id }}" 
-                            @selected(request('genre') == $genre->id)>
+                        <option value="{{ $genre->id }}" @selected(request('genre') == $genre->id)>
                             {{ $genre->name }}
                         </option>
                     @endforeach
                 </select>
             </div>
 
-            <!-- Filter button -->
+            <!-- Filter -->
             <div class="col-md-2">
                 <button class="btn btn-primary w-100">Filter</button>
             </div>
 
-            <!-- Clear button -->
+            <!-- Clear -->
             @if(request('q') || request('genre'))
-                <div class="col-md-1">
+                <div class="col-md-2">
                     <a href="{{ route('movies.index') }}" class="btn btn-secondary w-100">
-                        Clear
+                        Clear Filters
                     </a>
                 </div>
             @endif
-
         </div>
     </form>
 
     <!-- RESULTS COUNT -->
-    @if($movies->total() > 0)
-        <p class="text-muted">
-            Showing {{ $movies->count() }} of {{ $movies->total() }} results
-        </p>
-    @endif
+    <p class="text-muted">
+        Showing {{ $movies->count() }} of {{ $movies->total() }} results
+    </p>
 
-    <!-- MOVIE LIST -->
-    @foreach ($movies as $movie)
-        <div class="card mb-3">
-            <div class="row g-0">
+    <!-- MOVIE GRID -->
+    <div class="row">
+        @foreach($movies as $movie)
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm h-100">
 
                 <!-- Poster -->
-                @if ($movie->poster)
-                    <div class="col-md-4">
-                        <img 
-                            src="{{ asset('storage/' . $movie->poster) }}"
-                            class="img-fluid rounded-start"
-                            alt="{{ $movie->title }}">
+                @if($movie->poster)
+                    <img src="{{ asset('storage/' . $movie->poster) }}" 
+                         class="card-img-top"
+                         style="height: 350px; object-fit: cover;">
+                @else
+                    <div class="d-flex justify-content-center align-items-center bg-light" 
+                         style="height:350px;">
+                        <span class="text-muted">No Image</span>
                     </div>
                 @endif
 
-                <div class="col-md-8">
-                    <div class="card-body">
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title fw-bold">{{ $movie->title }}</h5>
 
-                        <!-- Title -->
-                        <h5 class="card-title">
-                            <a href="{{ route('movies.show', $movie) }}" class="text-decoration-none">
-                                {{ $movie->title }}
-                            </a>
-                        </h5>
+                    <p class="card-text text-muted">
+                        {{ Str::limit($movie->description, 100) }}
+                    </p>
 
-                        <!-- Description -->
-                        <p class="card-text">
-                            {{ Str::limit($movie->description, 120) }}
-                        </p>
-
-                        <!-- Posted by -->
-                        <p class="text-muted mb-2">
-                            Posted by 
-                            <a href="{{ route('users.show', $movie->user) }}">
+                    <p class="card-text">
+                        <small class="text-muted">
+                            Posted by
+                            <a href="{{ route('users.show', $movie->user) }}" class="fw-semibold">
                                 {{ $movie->user->name }}
                             </a>
-                        </p>
+                        </small>
+                    </p>
 
-                        <!-- Genres -->
-                        @if ($movie->genres->count() > 0)
-                            <p class="mb-2">
-                                @foreach ($movie->genres as $genre)
-                                    <span class="badge bg-secondary">{{ $genre->name }}</span>
-                                @endforeach
-                            </p>
-                        @endif
-
-                        <!-- View button -->
-                        <a href="{{ route('movies.show', $movie) }}" 
-                           class="btn btn-primary btn-sm">
-                           View
-                        </a>
-
+                    <!-- Genres -->
+                    <div class="mb-3">
+                        @foreach($movie->genres as $genre)
+                            <span class="badge bg-secondary me-1">{{ $genre->name }}</span>
+                        @endforeach
                     </div>
-                </div>
 
+                    <!-- Button at bottom -->
+                    <a href="{{ route('movies.show', $movie) }}" 
+                       class="btn btn-primary mt-auto">
+                        View Movie
+                    </a>
+
+                </div>
             </div>
         </div>
-    @endforeach
+        @endforeach
+    </div>
 
+    <!-- PAGINATION -->
+    <div class="mt-4">
+        {{ $movies->links() }}
+    </div>
+
+    <!-- PRODUCER CREATE BUTTON -->
     @auth
         @if(auth()->user()->isProducer())
-            <a href="{{ route('movies.create') }}" class="btn btn-primary">
-                Create Movie
-            </a>
+            <div class="mt-3">
+                <a href="{{ route('movies.create') }}" class="btn btn-success">
+                    + Create Movie
+                </a>
+            </div>
         @endif
     @endauth
 
-    <!-- Paginate -->
-    <div class="mt-3">
-        {{ $movies->links() }}
-    </div>
 </div>
 @endsection

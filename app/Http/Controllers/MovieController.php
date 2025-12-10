@@ -59,7 +59,7 @@ class MovieController extends Controller
             'release_year' => 'required|integer',
             'age_rating' => 'required|integer',
             'poster' => 'nullable|image|max:2048',
-            'genres' => 'array|required'
+            'genres' => 'array'
         ]);
 
         $data = $request->only(['title','description','release_year','age_rating']);
@@ -91,7 +91,7 @@ class MovieController extends Controller
      */
     public function edit(\App\Models\Movie $movie)
     {
-        $this->authorize('update', MovieController::class);
+        
         $genres = \App\Models\Genre::all();
 
         return view('movies.edit', compact('movie','genres'));
@@ -102,14 +102,13 @@ class MovieController extends Controller
      */
     public function update(Request $request, \App\Models\Movie $movie)
     {
-        $this->authorize('update', \App\Models\Movie::class);
         $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required',
             'release_year' => 'required|integer',
             'age_rating' => 'required|integer',
             'poster' => 'nullable|image|max:2048',
-            'genres' => 'array|required'
+            'genres' => 'array'
         ]);
 
         $movie->update($request->only(['title','description','release_year','age_rating']));
@@ -129,7 +128,6 @@ class MovieController extends Controller
      */
     public function destroy(\App\Models\Movie $movie)
     {
-        $this->authorize('delete', Movie::class);
         $movie->delete();
         return redirect()->route('movies.index')->with('success','Deleted successfully!');
     }
