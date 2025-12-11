@@ -11,7 +11,7 @@ Route::get('/', [MovieController::class, 'index'])
     ->name('home');
 
 Route::get('/dashboard', function () {
-    return view('dashboard');
+    return redirect()->route('movies.index');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
