@@ -112,16 +112,14 @@
         {{ $movies->links() }}
     </div>
 
-    <!-- PRODUCER CREATE BUTTON -->
-    @auth
-        @if(auth()->user()->isProducer())
-            <div class="mt-3">
-                <a href="{{ route('movies.create') }}" class="btn btn-success">
-                    + Create Movie
-                </a>
-            </div>
-        @endif
-    @endauth
+    <!-- CREATE BUTTON: use the same policy as the route middleware. -->
+    @can('create', \App\Models\Movie::class)
+        <div class="mt-3">
+            <a href="{{ route('movies.create') }}" class="btn btn-success">
+                + Create Movie
+            </a>
+        </div>
+    @endcan
 
 </div>
 @endsection

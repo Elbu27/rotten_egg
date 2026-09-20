@@ -45,6 +45,7 @@
                 <option value="user">User</option>
                 <option value="producer">Movie Producer</option>
             </select>
+            <x-input-error :messages="$errors->get('role')" class="mt-2" />
         </div>
 
         <div class="flex items-center justify-end mt-4">
