@@ -39,9 +39,7 @@ class MovieController extends Controller
      */
     public function create()
     {
-        if (!auth()->user()->isProducer()) {
-            abort(403, 'Only producers can create movies.');
-        }
+        // The route's can:create middleware applies MoviePolicy consistently.
         $genres = \App\Models\Genre::all();
 
         return view('movies.create', compact('genres'));
